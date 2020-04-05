@@ -1,8 +1,7 @@
 ### Multi stage build
-FROM golang:alpine AS build-env
-RUN apk add git
+FROM golang:1.14-stretch AS build-env
 ENV LEMONADE_REPO="github.com/pocke/lemonade"
-RUN go get -u -ldflags="-w -s" ${LEMONADE_REPO}
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go get -u -ldflags="-w -s" ${LEMONADE_REPO}
 #RUN GOOS=windows GOARCH=amd64 go get -u -ldflags="-H windowsgui -w -s" ${LEMONADE_REPO}
 
 ### Main
