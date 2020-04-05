@@ -1,0 +1,21 @@
+[[plugins]] # toml syntax
+repo = 'cespare/vim-toml'
+on_ft = 'toml'
+
+[[plugins]]
+repo = 'Xuyuanp/nerdtree-git-plugin' 
+
+
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+hook_add = '''
+  set guifont=Cica:h16
+  set printfont=Cica:h12
+  set ambiwidth=double
+  let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+  nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
+'''
+
+[[plugins]]
+repo = 'ryanoasis/vim-devicons'
+
