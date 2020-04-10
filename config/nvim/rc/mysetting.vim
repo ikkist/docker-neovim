@@ -15,3 +15,6 @@ let mapleader = "\<Space>"
 
 " 保存
 nnoremap <Leader>w :w<CR>
+
+" ターミナル (ノーマルモードに)
+tnoremap <C-[> <C-\><C-n>

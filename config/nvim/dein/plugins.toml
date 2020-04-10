@@ -95,10 +95,17 @@ CocInstall -sync coc-docker coc-sh coc-vetur
 '''
 
 [[plugins]]
+repo = 'ryanoasis/vim-devicons'
+
+[[plugins]]
 repo = 'junegunn/fzf.vim'
 hook_add = '''
 " Always enable preview window on the right with 60% width
 let g:fzf_preview_window = 'right:60%'
 " [[B]Commits] Customize the options used by 'git log':
 let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
+" Key Map
+nnoremap <Leader>ff :GFiles<CR>
+nnoremap <Leader>fb :Buffers<CR>
+nnoremap <Leader>fg :Rg
 '''

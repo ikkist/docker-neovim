@@ -25,6 +25,7 @@ RUN apk update && \
     libxslt-dev \
     musl-dev\
     neovim \
+    neovim-doc\
     nodejs \
     python-dev \
     python3-dev \
