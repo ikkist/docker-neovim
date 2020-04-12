@@ -1,8 +1,10 @@
-### Multi stage build
+## Multi stage build
+## Install golang tool
 FROM golang:1.14-stretch AS build-env
-ENV LEMONADE_REPO="github.com/pocke/lemonade"
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go get -u -ldflags="-w -s" ${LEMONADE_REPO}
-#RUN GOOS=windows GOARCH=amd64 go get -u -ldflags="-H windowsgui -w -s" ${LEMONADE_REPO}
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go get golang.org/x/tools/gopls@latest
+# ENV LEMONADE_REPO="github.com/pocke/lemonade"
+# RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go get -u -ldflags="-w -s" ${LEMONADE_REPO}
+# RUN GOOS=windows GOARCH=amd64 go get -u -ldflags="-H windowsgui -w -s" ${LEMONADE_REPO}
 
 ### Main
 FROM alpine:latest
@@ -56,11 +58,12 @@ RUN apk --no-cache --virtual .only-build add \
     bash-language-server \
     vue-language-server && \
     nvim +UpdateRemotePlugins +qa  --headless && \
-    nvim +'CocInstall -sync coc-sh coc-vetur coc-docker' +qa --headless && \
+    nvim +'CocInstall -sync coc-go coc-sh coc-vetur coc-tsserver coc-json coc-prettier coc-eslint coc-tslint coc-docker' +qa --headless && \
     chmod g+wrx -R /etc/xdg && chown -R :${DEFAULT_NVIM_GROUP_NAME} /etc/xdg && \
     chmod g+wrx -R /etc/xdg && chown -R :${DEFAULT_NVIM_GROUP_NAME} /etc/xdg && find /etc/xdg -type d -name ".git" | xargs -i rm -r {} && apk del --purge .only-build
 
-COPY --from=build-env /go/bin/lemonade /usr/local/bin/
+##COPY --from=build-env /go/bin/lemonade /usr/local/bin/
+COPY --from=build-env /go/bin/golsp /usr/bin/
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["nvim"]

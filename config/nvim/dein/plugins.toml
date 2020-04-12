@@ -90,8 +90,9 @@ set laststatus=2
 repo = 'neoclide/coc.nvim'
 merged = 0
 rev = 'release'
-hook_post_source = '''
-CocInstall -sync coc-docker coc-sh coc-vetur
+hook_add = '''
+" settings for golang
+autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
 '''
 
 [[plugins]]
