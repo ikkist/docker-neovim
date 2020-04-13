@@ -1,7 +1,7 @@
 ## Multi stage build
 ## Install golang tool
-FROM golang:1.14-stretch AS build-env
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go get golang.org/x/tools/gopls@latest
+## FROM golang:1.14-stretch AS build-env
+## RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go get golang.org/x/tools/gopls@latest
 # ENV LEMONADE_REPO="github.com/pocke/lemonade"
 # RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go get -u -ldflags="-w -s" ${LEMONADE_REPO}
 # RUN GOOS=windows GOARCH=amd64 go get -u -ldflags="-H windowsgui -w -s" ${LEMONADE_REPO}
@@ -34,10 +34,19 @@ RUN apk update && \
     ruby \
     npm \
     su-exec shadow \
+    go \
     fzf ripgrep bash xclip
 
 COPY --chown=0:${DEFAULT_NVIM_GROUP_ID} config ${XDG_CONFIG_HOME}
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
+ENV CGO_ENABLED=0 \
+    GOOS=linux\
+    GOARCH=amd64 \
+    GOPATH="/usr/local/go" \
+    GO111MODULE="on"
+
+ENV PATH=${PATH}:${GOPATH}/bin
 
 RUN apk --no-cache --virtual .only-build add \
     build-base \
@@ -57,13 +66,16 @@ RUN apk --no-cache --virtual .only-build add \
     npm install -g --production dockerfile-language-server-nodejs \
     bash-language-server \
     vue-language-server && \
+    go get golang.org/x/tools/gopls@latest && \
+## Install nvim coc extentions
     nvim +UpdateRemotePlugins +qa  --headless && \
     nvim +'CocInstall -sync coc-go coc-sh coc-vetur coc-tsserver coc-json coc-prettier coc-eslint coc-tslint coc-docker' +qa --headless && \
+## Change permission and owner
     chmod g+wrx -R /etc/xdg && chown -R :${DEFAULT_NVIM_GROUP_NAME} /etc/xdg && \
     chmod g+wrx -R /etc/xdg && chown -R :${DEFAULT_NVIM_GROUP_NAME} /etc/xdg && find /etc/xdg -type d -name ".git" | xargs -i rm -r {} && apk del --purge .only-build
 
 ##COPY --from=build-env /go/bin/lemonade /usr/local/bin/
-COPY --from=build-env /go/bin/golsp /usr/bin/
+##COPY --from=build-env /go/bin/gopls /usr/bin/
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["nvim"]
