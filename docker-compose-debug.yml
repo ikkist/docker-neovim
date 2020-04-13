@@ -1,0 +1,15 @@
+version: '3'
+services:
+    nvim:
+        build: .
+        image: nvim
+        volumes:
+            - ${PWD}:/share/nvim/
+            - ${PWD}/config/nvim:/etc/xdg/config/nvim
+            - /tmp/.X11-unix:/tmp/.X11-unix
+        working_dir: /share/nvim/
+        environment:
+            USER_ID: ${UID:-0}
+            GROUP_ID: ${GID:-0}
+            DISPLAY: ${DISPLAY}
+        tty: true
